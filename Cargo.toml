@@ -1,0 +1,40 @@
+[package]
+name = "website"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+
+[dependencies]
+color = "0.3.1"
+convert_case = "0.8.0"
+gloo = "0.11.0"
+gloo-storage = "0.3.0"
+indoc = "2.0.6"
+log = "0.4.27"
+serde = { version = "1.0.219", features = ["derive"] }
+strum = { version = "0.27.1", features = ["derive"] }
+stylist = { version = "0.13.0", features = ["yew_integration"] }
+syntect = { version = "5.2", default-features = false, features = [
+  "default-fancy",
+  "parsing",
+] }
+wasm-bindgen = "0.2.100"
+wasm-logger = "0.2.0"
+web-sys = { version = "0.3.77", features = [
+  "Element",
+  "DomRect",
+  "HtmlCanvasElement",
+  "HtmlInputElement",
+  "HtmlSelectElement",
+  "WebGlBuffer",
+  "WebGlProgram",
+  "WebGlRenderingContext",
+  "WebGlShader",
+  "WebGlUniformLocation",
+  "WebGlActiveInfo",
+  "WebGlFramebuffer",
+  "WebGlTexture",
+] }
+yew = { version = "0.21.0", features = ["csr"] }
+yew-agent = "0.3.0"
+yew-router = "0.18.0"
