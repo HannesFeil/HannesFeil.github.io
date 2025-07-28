@@ -30,9 +30,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Install trunk
+        uses: jetli/trunk-action@v0.5.0
       - name: Build Pages
         run: |
-          cargo install trunk
           rustup target add wasm32-unknown-unknown
           trunk build --release
       - name: Setup Pages
