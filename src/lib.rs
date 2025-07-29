@@ -94,7 +94,7 @@ fn home_page() -> Html {
                 <p>{"Lucky you :)"}</p>
                 <p>{"Feel free to wander around and enjoy our little codlings." }</p>
             </Section>
-            <Section title="Cute Codlings">
+            <Section title="Projects">
                 <ul>
                     {for projects}
                 </ul>

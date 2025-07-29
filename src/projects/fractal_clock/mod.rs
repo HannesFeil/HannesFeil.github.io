@@ -3,7 +3,7 @@ use std::{collections::HashMap, rc::Rc};
 use crate::{
     navigation::{Route, Section},
     projects::{
-        CodeExample, ProjectSite,
+        CodeExample, Note, ProjectSite,
         fractal_clock::render::{
             BLEND_EQUATIONS, BLEND_MULTIPLIERS, BlendConstant, FractalClockRenderInput,
             FractalClockRenderer, MAX_RECURSION_DEPTH,
@@ -170,14 +170,16 @@ pub fn fractal_clock_page() -> Html {
                     <a href="https://en.wikipedia.org/wiki/Fractal_canopy">{"Fractal canopy"}</a>
                     {"."}
                 </p>
-                <p>
-                    {"
-                        Just a quick note: The source code of this website is accessible to anyone
-                        interested in the implementation used throughout the explanation, see 
-                    "}
-                    <Link<Route> to={Route::About}>{"About"}</Link<Route>>
-                    {"."}
-                </p>
+                <Note>
+                    <p>
+                        {"
+                            Just a quick note: The source code of this website is accessible to anyone
+                            interested in the implementation used throughout the explanation, see 
+                        "}
+                        <Link<Route> to={Route::About}>{"About"}</Link<Route>>
+                        {"."}
+                    </p>
+                </Note>
             </Section>
             <Section title="Implementation Basics">
                 <p>
@@ -231,7 +233,7 @@ pub fn fractal_clock_page() -> Html {
                 <p>
                     {"
                         However we need to carry the pointer angles around, and repeatedly calculate
-                        sinus and cosinus functions. To avoid those hassles, we can use
+                        the sinus and cosinus functions. To avoid those hassles, we can use
                     "}
                     <a href="https://en.wikipedia.org/wiki/Complex_number">{"Complex Numbers"}</a>
                     {"
@@ -259,16 +261,21 @@ pub fn fractal_clock_page() -> Html {
                 <CodeExample lang="Rust">
                     {indoc::indoc! {
                         r#"
-                            let (hour_x, hour_y, minute_x, minute_y) = //...
-                            let (prev_pointer_x, prev_pointer_y) = // ...
-                            let next_pointer_origin = (prev_pointer_x, prev_pointer_y);
-                            // We cannot add the origin offset with this method, but
-                            // since we need the previous point for rendering anyway
-                            // we can simply add it during rendering
-                            let next_hour_pointer = (
-                                prev_pointer_x * hour_x - prev_pointer_y * hour_y,
-                                prev_pointer_x * hour_y + prev_pointer_y * hour_x
+                            let (hour_angle_x, hour_angle_y, minute_angle_x, minute_angle_y) = //...
+                            let (
+                                prev_pointer_x, prev_pointer_y,
+                                prev_pointer_angle_x, prev_pointer_angle_y,
+                            ) = // ...
+                            // Calculate the next pointer offset
+                            let next_hour_pointer_angle = (
+                                prev_pointer_angle_x * hour_angle_x - prev_pointer_angle_y * hour_angle_y,
+                                prev_pointer_angle_x * hour_angle_y + prev_pointer_angle_y * hour_angle_x,
                             );
+                            // Sum previous offsets to get the actual vertex coordinate
+                            let next_hour_pointer = (
+                                prev_pointer_x + next_hour_pointer_angle.0,
+                                prev_pointer_y + next_hour_pointer_angle.1,
+                            )
                             // Similar for the minute pointer ...
                         "#
                     }}
@@ -292,12 +299,59 @@ pub fn fractal_clock_page() -> Html {
                 </p>
                 <p>
                     {"
-                        Note: Since the first layers contain only a few vertices, it is faster to
-                        compute them on the CPU before sending them to the GPU, since each layer
-                        needs a seperate pass to the GPU. Also I've scaled the clock depending on
-                        the recursion depth to completely fit on screen.
+                        Structurally we are working with a slightly modified array representation
+                        of a binary tree, where each node is the translation from the previous
+                        pointer end to the next pointer end (minute or hour respectively). The
+                        following is a rather accurate translation of the actual code used for the
+                        cpu computation.
                     "}
-                </p>
+                 </p>
+                <CodeExample lang="Rust">
+                    {indoc::indoc! {r#"
+                        array[0] = (
+                            hour_angle_x, hour_angle_y, // Actual coordinate
+                            hour_angle_x, hour_angle_y, // Pointer angle
+                        );
+                        array[1] = (
+                            minute_angle_x, minute_angle_y, // Actual coordinate
+                            minute_angle_x, minute_angle_y, // Pointer angle
+                        );
+
+                        for i in 2..NUM_POINTERS {
+                            let parent = i / 2 - 1; // Calculate parent index
+                            let position = (
+                                array[parent].0, array[parent].1,
+                            );
+                            let angle = (
+                                array[parent].2, array[parent].3,
+                            );
+                            // Use the corresponding default angle
+                            let mut new_angle = if i % 2 == 0 { hour } else { minute };
+                            // Compute the new angle
+                            new_angle = (
+                                angle.0 * new_angle.0 - angle.1 * new_angle.1,
+                                angle.0 * new_angle.1 + angle.1 * new_angle.0,
+                            );
+                            // Set update the data for the current pointer
+                            array[i] = (
+                                position.0 + new_angle.0,
+                                position.1 + new_angle.1,
+                                new_angle.0,
+                                new_angle.1,
+                            )
+                        }
+                    "#}}
+                </CodeExample>
+                <Note>
+                    <p>
+                        {"
+                            Note: Since the first layers contain only a few vertices, it is faster to
+                            compute them on the CPU before sending them to the GPU, since each layer
+                            needs a seperate pass to the GPU. Also I've scaled the clock depending on
+                            the recursion depth to completely fit on screen.
+                        "}
+                    </p>
+                </Note>
                 <FractalClockExample
                     version={ExampleVersion::TrivialRecursive(true)}
                     final_render_input={final_render_input.clone()}
@@ -360,6 +414,12 @@ pub fn fractal_clock_page() -> Html {
                     {"
                         And that's it for this little Codling :) I hope maybe this inspires you to expand
                         on the idea of a fractal clock, since I only implemented the basic functionality.
+                        Consider the fun challenge of expanding the clock to include a seconds pointer:
+                        How difficult would that be? What would you need to change?
+                    "}
+                </p>
+                <p>
+                    {"
                         I also want to thank
                     "}
                     <a href="https://www.youtube.com/c/codeparade">{"Code Parade"}</a>

@@ -211,6 +211,29 @@ pub fn project_site(ProjectSiteProperties { title, children }: &ProjectSitePrope
     }
 }
 
+#[derive(Debug, PartialEq, Properties)]
+pub struct NoteProperties {
+    children: Children,
+}
+
+/// Displays a note box around some content
+#[function_component(Note)]
+pub fn note(props: &NoteProperties) -> Html {
+    let theme = use_theme();
+    let style = use_style!(
+        r#"
+            padding: 10px 20px;
+            background-color: ${bg};
+        "#,
+        bg = theme.base03,
+    );
+    html! {
+        <div class={style}>
+            {props.children.clone()}
+        </div>
+    }
+}
+
 /// Properties for the [`CodeExample`] component
 #[derive(Debug, PartialEq, Properties)]
 pub struct CodeExampleProperties {
