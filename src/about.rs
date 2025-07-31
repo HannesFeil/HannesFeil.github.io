@@ -20,12 +20,16 @@ pub fn about_page() -> Html {
                 text-align: center;
             }
 
-            section {
+            > section {
                 padding: 5px 0px;
             }
 
             a {
                 color: ${link_fg};
+            }
+
+            .centered-p {
+                padding-bottom: 50px;
             }
 
             .centered-p p {
@@ -77,6 +81,10 @@ pub fn about_page() -> Html {
                     <h3>{"Icons"}</h3>
                     <p>
                         <a href="https://iconoir.com/">{"Iconoir"}</a>
+                    </p>
+                    <h3>{"Fonts"}</h3>
+                    <p>
+                        <a href="https://pcaro.es/hermit/">{"Hermit"}</a>
                     </p>
                 </Section>
             </div>
@@ -203,16 +211,20 @@ impl Author {
                     <h3>{self.name()}</h3>
                     <p>
                         {"
-                            Put some text here yay
+                            I'm a third year Bachelor's student in Computer science.
                         "}
+                    </p>
+                    <p>
                         {"
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-                            veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-                            commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-                            velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-                            occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-                            mollit anim id est laborum.
+                            < This place intentionally left empty >
+                        "}
+                    </p>
+                    <p>
+                        {"
+                            Lately I got interested in compute shaders because of their ability to
+                            aid in the efficient creation of fascinating visuals. These highlighy
+                            complex illustrations often emerge from relatively simple rules and
+                            operations. 
                         "}
                     </p>
                 </ImageSplitDiv>
@@ -222,8 +234,8 @@ impl Author {
                     <h3>{self.name()}</h3>
                     <p>
                         {"
-                            I'm 22 years old and studying for my Bachelor's degree in Computer
-                            Science.
+                            I'm (at the time of writing) 22 years old and studying for my Bachelor's
+                            degree in Computer science.
                         "}
                     </p>
                     <p>
