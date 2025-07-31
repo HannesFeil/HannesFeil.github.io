@@ -162,8 +162,8 @@ fn author_badge(AuthorBadgeProperties { name, color }: &AuthorBadgeProperties) -
 /// Authors of this website
 #[derive(Debug, Clone, Copy, PartialEq, Eq, strum::EnumIter)]
 pub enum Author {
-    DawnFirefly,
     Ciklon,
+    DawnFirefly,
 }
 
 impl Author {
