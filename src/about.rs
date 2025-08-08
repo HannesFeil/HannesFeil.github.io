@@ -9,7 +9,7 @@ use crate::{
     theme::{ThemeColor, ThemeKind, use_theme},
 };
 
-const WEBSITE_SOURCE_LINK: &str = "https://github.com/HannesFeil/Website";
+const WEBSITE_SOURCE_LINK: &str = "https://github.com/HannesFeil/HannesFeil.github.io";
 
 #[function_component(AboutPage)]
 pub fn about_page() -> Html {
