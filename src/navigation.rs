@@ -8,7 +8,9 @@ use stylist::{css, yew::use_style};
 use yew::prelude::*;
 use yew_router::{BrowserRouter, Routable, Switch, prelude::Link};
 
-use crate::{HomePage, about::AboutPage, projects::Project, theme::ThemeSelector, use_theme};
+use crate::{
+    HomePage, NotFoundPage, about::AboutPage, projects::Project, theme::ThemeSelector, use_theme,
+};
 
 #[cfg(debug_assertions)]
 use crate::TestPage;
@@ -161,7 +163,7 @@ fn switch(route: Route) -> Html {
     let content = match route {
         Route::Home => html! { <HomePage/> },
         Route::About => html! { <AboutPage/> },
-        Route::NotFound => html! { <p>{"NotFount" }</p> },
+        Route::NotFound => html! { <NotFoundPage/> },
         #[cfg(debug_assertions)]
         Route::Test => html! { <TestPage/> },
         Route::Project { project } => project.html(),
@@ -268,25 +270,31 @@ fn navigation_bar(props: &NavigationBarProperties) -> Html {
             sidebar_visible.set(!*sidebar_visible);
         }
     });
-    let buttons: Html = [
-        Route::Home,
-        #[cfg(debug_assertions)]
-        Route::Test,
-        Route::About,
-    ]
-    .into_iter()
-    .chain(Project::iter().map(|project| project.route()))
-    .map(|route| {
-        html! {
-            <NavigationButton
-                 height={props.height.clone()}
-                 route={route}
-                 text={route.to_string()}
-                 active={route == props.route}
-            />
-        }
-    })
-    .collect();
+    let debug_pages = if cfg!(debug_assertions) {
+        [
+            #[cfg(debug_assertions)]
+            Route::Test,
+            Route::NotFound,
+        ]
+        .as_slice()
+    } else {
+        &[]
+    };
+    let buttons: Html = [Route::Home, Route::About]
+        .into_iter()
+        .chain(Project::iter().map(|project| project.route()))
+        .chain(debug_pages.iter().copied())
+        .map(|route| {
+            html! {
+                <NavigationButton
+                     height={props.height.clone()}
+                     route={route}
+                     text={route.to_string()}
+                     active={route == props.route}
+                />
+            }
+        })
+        .collect();
     html! {
         <>
             <div class={nav_bar_style}>

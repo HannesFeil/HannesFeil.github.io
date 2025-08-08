@@ -104,6 +104,33 @@ fn home_page() -> Html {
     }
 }
 
+#[function_component(NotFoundPage)]
+fn not_fount_page() -> Html {
+    let style = use_style!(
+        r#"
+            margin-top: 50px;
+
+            h1 {
+                text-align: center;
+            }
+
+            div {
+                margin: 50px auto;
+                width: 512px;
+                justify-content: center;
+            }
+        "#
+    );
+    html! {
+        <div class={style}>
+            <h1>{"Page Not Found"}</h1>
+            <div>
+                <img src="assets/images/cod_question_512.png"/>
+            </div>
+        </div>
+    }
+}
+
 #[cfg(debug_assertions)]
 #[function_component(TestPage)]
 fn test_page() -> Html {
