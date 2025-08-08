@@ -3,3 +3,8 @@
 # address = "0.0.0.0"
 # The port to serve on.
 port = 8000
+
+[[hooks]]
+stage = "post_build"
+command = "sh"
+command_arguments = ["-c", "cp \"$TRUNK_STAGING_DIR/index.html\" \"$TRUNK_STAGING_DIR/404.html\""]
