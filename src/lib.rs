@@ -44,7 +44,7 @@ fn global_style() -> Html {
                         background: ${bg};
                         color: ${fg};
                         margin: 0px;
-                        font-family: "hermit" "sans-serif";
+                        font-family: "hermit";
                     }
 
                     :where(h1) {
